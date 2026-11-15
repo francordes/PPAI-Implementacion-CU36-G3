@@ -1,0 +1,12 @@
+# Python
+ppai-cu36/venv/
+__pycache__/
+*.pyc
+ppai-cu36/bolsines.db
+
+# Java (API)
+dsi-api-bolsines-main/target/
+dsi-api-bolsines-main/.idea/
+
+# Editor
+.vscode/

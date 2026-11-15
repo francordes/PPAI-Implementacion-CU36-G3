@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Inicio{% endblock %}
+{% block contenido %}
+<section class="tarjeta angosta">
+  <h1>Bienvenido/a, {{ usuario }}</h1>
+  <form method="post" action="{{ url_for('pantalla.selecOpcConsultarUbicacion') }}">
+    <button type="submit">Consultar ubicación de bolsines</button>
+  </form>
+</section>
+{% endblock %}

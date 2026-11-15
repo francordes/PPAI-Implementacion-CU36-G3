@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bolsines - {% block titulo %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header>
+    <strong>Sistema Bolsines</strong>
+    {% if session.get('sesion_id') %}<a href="{{ url_for('pantalla.logout') }}">Cerrar sesión</a>{% endif %}
+  </header>
+  <main>
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>

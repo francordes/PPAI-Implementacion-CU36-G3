@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block titulo %}Consultar seguimiento de bolsines{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+  <div class="encabezado">
+    <h1>Consultar seguimiento de bolsines</h1>
+    {% if vista.cmUsuario %}<span class="etiqueta">CM del usuario: {{ vista.cmUsuario }}</span>{% endif %}
+  </div>
+
+  {% for m in vista.mensajes %}
+  <div class="mensaje alerta"><strong>{{ m.codigo }}</strong> — {{ m.texto }}</div>
+  {% endfor %}
+  {% if mensajeFiltro %}
+  <div class="mensaje alerta"><strong>{{ mensajeFiltro.codigo }}</strong> — {{ mensajeFiltro.texto }}</div>
+  {% endif %}
+  {% if vista.exito %}
+  <div class="mensaje exito">{{ vista.exito }}</div>
+  {% endif %}
+
+  {% if not finalizado and vista.confirmarCorreo %}
+  {% set b = vista.confirmarCorreo %}
+  <div class="confirmacion">
+    <h2>Bolsín seleccionado: {{ b.numeroBolsin }}</h2>
+    <p>Precinto {{ b.numeroPrecinto }} · CM destino {{ b.cmDestino }} · Última actualización {{ b.fechaHora }} · ({{ b.lat }}, {{ b.lng }})</p>
+    <p>¿Desea enviar un correo electrónico al Gerente de Comisión Médica destino para informar la ubicación del bolsín?</p>
+    <form method="post" action="{{ url_for('pantalla.tomarConfirmacionEnvioCorreo') }}" class="botones">
+      <button name="confirma" value="si">Sí, enviar correo</button>
+      <button name="confirma" value="no" class="secundario">No enviar</button>
+    </form>
+  </div>
+  {% endif %}
+
+  {% if not finalizado and vista.marcadores and not vista.confirmarCorreo %}
+  <form method="get" class="filtros">
+    {% if 'filtrarPorNumero' in vista.opciones %}
+    <label>Nro. de precinto <input name="precinto" value="{{ precinto }}" inputmode="numeric"></label>
+    {% endif %}
+    {% if 'filtrarPorCM' in vista.opciones %}
+    <label>CM destino
+      <select name="cmDestino">
+        <option value="">Todas</option>
+        {% for cm in cmsDestino %}<option value="{{ cm }}" {% if cm == cmDestino %}selected{% endif %}>{{ cm }}</option>{% endfor %}
+      </select>
+    </label>
+    {% endif %}
+    <button type="submit">Filtrar</button>
+    <a href="{{ url_for('pantalla.seguimiento') }}">Limpiar</a>
+  </form>
+
+  <div id="mapa"></div>
+
+  <table>
+    <thead><tr><th>Bolsín</th><th>Precinto</th><th>CM destino</th><th>Última actualización</th><th>Coordenadas</th><th></th></tr></thead>
+    <tbody>
+    {% for m in marcadores %}
+      <tr>
+        <td>{{ m.numeroBolsin }}</td><td>{{ m.numeroPrecinto }}</td><td>{{ m.cmDestino }}</td>
+        <td>{{ m.fechaHora }}</td><td>{{ m.lat }}, {{ m.lng }}</td>
+        <td>
+          <form method="post" action="{{ url_for('pantalla.tomarSeleccion') }}">
+            <input type="hidden" name="numeroBolsin" value="{{ m.numeroBolsin }}">
+            <button type="submit">Seleccionar</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <div class="botones pie">
+    {% if not finalizado %}
+    <form method="post" action="{{ url_for('pantalla.cancelar') }}">
+      <button type="submit" class="secundario">Cancelar</button>
+    </form>
+    {% else %}
+    <a class="boton" href="{{ url_for('pantalla.inicio') }}">Volver al inicio</a>
+    {% endif %}
+  </div>
+</section>
+
+<form id="formSeleccion" method="post" action="{{ url_for('pantalla.tomarSeleccion') }}" hidden>
+  <input type="hidden" name="numeroBolsin" id="numeroBolsinSeleccionado">
+</form>
+
+{% if not finalizado and vista.marcadores and not vista.confirmarCorreo %}
+<script>
+  const marcadores = {{ marcadores | tojson }};
+  const mapa = L.map('mapa').setView([-34.6, -64.2], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18, attribution: '&copy; OpenStreetMap'
+  }).addTo(mapa);
+
+  function seleccionar(numero) {
+    document.getElementById('numeroBolsinSeleccionado').value = numero;
+    document.getElementById('formSeleccion').submit();
+  }
+
+  const limites = [];
+  marcadores.forEach(m => {
+    L.marker([m.lat, m.lng]).addTo(mapa).bindPopup(
+      `<strong>Bolsín ${m.numeroBolsin}</strong><br>Precinto: ${m.numeroPrecinto}<br>` +
+      `CM destino: ${m.cmDestino}<br>Actualizado: ${m.fechaHora}<br>` +
+      `<button onclick="seleccionar(${m.numeroBolsin})">Seleccionar bolsín</button>`
+    );
+    limites.push([m.lat, m.lng]);
+  });
+  if (limites.length > 0) mapa.fitBounds(limites, { padding: [40, 40], maxZoom: 10 });
+</script>
+{% endif %}
+{% endblock %}

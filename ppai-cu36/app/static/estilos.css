@@ -1,0 +1,28 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, Segoe UI, Roboto, sans-serif; background: #f3f5f8; color: #1f2933; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: #1e3a5f; color: #fff; }
+header a { color: #fff; }
+main { padding: 24px; }
+.tarjeta { background: #fff; border-radius: 8px; padding: 24px; max-width: 1100px; margin: 0 auto; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.angosta { max-width: 560px; }
+.encabezado { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+h1 { font-size: 1.4rem; margin: 0 0 12px; }
+h2 { font-size: 1.1rem; margin: 0 0 8px; }
+.etiqueta { background: #e3ecf7; padding: 4px 10px; border-radius: 12px; font-size: .9rem; }
+.ayuda { color: #616e7c; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
+select, input { padding: 8px; border: 1px solid #cbd2d9; border-radius: 4px; font-size: 1rem; }
+button, .boton { padding: 8px 16px; border: none; border-radius: 4px; background: #2563eb; color: #fff; cursor: pointer; font-size: .95rem; text-decoration: none; display: inline-block; }
+button.secundario { background: #e4e7eb; color: #1f2933; }
+form { margin: 0; }
+.angosta form { display: flex; flex-direction: column; gap: 12px; }
+.filtros { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin: 16px 0; }
+#mapa { height: 420px; border-radius: 6px; margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e4e7eb; }
+.mensaje { padding: 10px 14px; border-radius: 6px; margin: 8px 0; }
+.alerta { background: #fff4e5; border: 1px solid #f5c26b; }
+.exito { background: #e6f6ec; border: 1px solid #7fc79a; }
+.confirmacion { background: #f0f5ff; border: 1px solid #b6c9f0; padding: 16px; border-radius: 6px; margin: 16px 0; }
+.botones { display: flex; gap: 8px; }
+.pie { margin-top: 16px; }
