@@ -76,6 +76,40 @@ class PantallaConsultarBolsines:
         if codigo in ("A4", "A5"):
             self.vista["confirmarCorreo"] = None
 
+    # ---------- Pasos del CU (indicador visual) ----------
+    def obtenerPasos(self, finalizado: bool) -> list:
+        nombres = ["CM del usuario", "Bolsines enviados", "Ubicación GPS", "Selección del bolsín", "Notificación al GCM"]
+        codigos = [m["codigo"] for m in self.vista.get("mensajes", [])]
+        if self.vista.get("exito"):
+            actual, cortado = 5, None
+        elif "A1" in codigos:
+            actual, cortado = 1, 1
+        elif finalizado and not self.vista.get("marcadores"):
+            actual, cortado = 2, 2          # A3 total
+        elif "A5" in codigos:
+            actual, cortado = 4, 4
+        elif "A4" in codigos:
+            actual = 4 if self.vista.get("confirmarCorreo") else 3
+            cortado = actual
+        elif self.vista.get("confirmarCorreo"):
+            actual, cortado = 4, None
+        else:
+            actual, cortado = 3, None
+        pasos = []
+        indice = 0
+        while indice < len(nombres):
+            if cortado is not None and indice == cortado:
+                estado = "cortado"
+            elif indice < actual or (indice == actual and self.vista.get("exito")):
+                estado = "hecho"
+            elif indice == actual and cortado is None:
+                estado = "actual"
+            else:
+                estado = "pendiente"
+            pasos.append({"nombre": nombres[indice], "estado": estado})
+            indice = indice + 1
+        return pasos
+
     # ---------- Filtros de presentación sobre el mapa ----------
     def filtrarMarcadores(self, precinto: str, cmDestino: str):
         marcadores = self.vista.get("marcadores", [])
@@ -105,6 +139,24 @@ def _sesionActual():
 
 def _pantallaActiva():
     return _casosDeUsoActivos.get(session.get("cu_id"))
+
+
+@bp.app_context_processor
+def _datosUsuarioEncabezado():
+    """Datos del usuario logueado para el encabezado de todas las páginas."""
+    sesionActual = _sesionActual()
+    if sesionActual is None:
+        return {"usuarioActual": None}
+    usuario = sesionActual.getUsuario()
+    for empleado in Empleado.query.all():
+        if empleado.esTuUsuario(usuario):
+            return {"usuarioActual": {
+                "nombre": empleado.getNombreCompleto(),
+                "iniciales": (empleado.nombre[:1] + empleado.apellido[:1]).upper(),
+                "rol": empleado.rol.nombre,
+                "cm": empleado.getCM().getNombre(),
+            }}
+    return {"usuarioActual": None}
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -171,6 +223,7 @@ def seguimiento():
         cmDestino=cmDestino,
         cmsDestino=cmsDestino,
         finalizado=pantalla.gestor.finalizado,
+        pasos=pantalla.obtenerPasos(pantalla.gestor.finalizado),
     )
 
 

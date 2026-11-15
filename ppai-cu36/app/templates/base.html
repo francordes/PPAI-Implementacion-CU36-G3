@@ -3,17 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bolsines - {% block titulo %}{% endblock %}</title>
+  <title>Bolsines · {% block titulo %}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
   {% block head %}{% endblock %}
 </head>
 <body>
-  <header>
-    <strong>Sistema Bolsines</strong>
-    {% if session.get('sesion_id') %}<a href="{{ url_for('pantalla.logout') }}">Cerrar sesión</a>{% endif %}
+  <header class="barra">
+    <a class="marca" href="{{ url_for('pantalla.inicio') }}">
+      <span class="marca-icono">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/></svg>
+      </span>
+      <span>
+        <strong>Sistema Bolsines</strong>
+        <small>Organismo Controlador · Comisiones Médicas</small>
+      </span>
+    </a>
+    {% if usuarioActual %}
+    <div class="usuario">
+      <span class="avatar">{{ usuarioActual.iniciales }}</span>
+      <span class="usuario-datos">
+        <strong>{{ usuarioActual.nombre }}</strong>
+        <small>{{ usuarioActual.rol }} · {{ usuarioActual.cm }}</small>
+      </span>
+      <a class="salir" href="{{ url_for('pantalla.logout') }}" title="Cerrar sesión">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+        Salir
+      </a>
+    </div>
+    {% endif %}
   </header>
   <main>
     {% block contenido %}{% endblock %}
   </main>
+  <footer class="pie-pagina">PPAI DSI 2026 · CU 36 Consultar seguimiento de bolsines · Patrón Iterator</footer>
 </body>
 </html>

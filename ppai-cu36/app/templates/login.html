@@ -1,17 +1,34 @@
 {% extends "base.html" %}
 {% block titulo %}Iniciar sesión{% endblock %}
 {% block contenido %}
-<section class="tarjeta angosta">
-  <h1>Iniciar sesión</h1>
-  <p class="ayuda">Inicio de sesión simulado: seleccioná el usuario.</p>
-  <form method="post">
-    <label for="usuario_id">Usuario</label>
-    <select name="usuario_id" id="usuario_id" required>
-      {% for e in empleados %}
-      <option value="{{ e.usuario.id }}">{{ e.usuario.nombreUsuario }} — {{ e.getNombreCompleto() }} ({{ e.rol.nombre }}, {{ e.getCM().getNombre() }})</option>
-      {% endfor %}
-    </select>
-    <button type="submit">Ingresar</button>
-  </form>
-</section>
+<div class="login">
+  <section class="tarjeta login-form">
+    <h1>Iniciar sesión</h1>
+    <p class="texto-suave">Inicio de sesión simulado: elegí el empleado con el que querés ingresar.</p>
+    <form method="post">
+      <label for="usuario_id">Usuario</label>
+      <select name="usuario_id" id="usuario_id" required>
+        {% for e in empleados %}
+        <option value="{{ e.usuario.id }}">{{ e.usuario.nombreUsuario }} — {{ e.getNombreCompleto() }} ({{ e.getCM().getNombre() }})</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primario btn-bloque">Ingresar</button>
+    </form>
+  </section>
+
+  <section class="tarjeta login-ayuda">
+    <h2>Usuarios para la demo</h2>
+    <table class="tabla tabla-compacta">
+      <thead><tr><th>Flujo</th><th>Usuario</th><th>Cómo verlo</th></tr></thead>
+      <tbody>
+        <tr><td><span class="chip chip-exito">Descripto</span></td><td><code>eb.cm.cba.01</code></td><td>Seleccionar el bolsín 101 y confirmar el correo</td></tr>
+        <tr><td><span class="chip chip-alerta">A1</span></td><td><code>eb.cm.juj.01</code></td><td>Consultar ubicación</td></tr>
+        <tr><td><span class="chip chip-alerta">A2</span></td><td><code>eb.cm.cba.01</code></td><td>Filtrar por el precinto 9999</td></tr>
+        <tr><td><span class="chip chip-alerta">A3</span></td><td><code>eb.cm.cba.02</code></td><td>El bolsín 111 no tiene ubicación en el GPS</td></tr>
+        <tr><td><span class="chip chip-info">A4</span></td><td>cualquiera</td><td>Botón Cancelar</td></tr>
+        <tr><td><span class="chip chip-info">A5</span></td><td><code>eb.cm.cba.01</code></td><td>Seleccionar un bolsín y elegir "No enviar"</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
 {% endblock %}

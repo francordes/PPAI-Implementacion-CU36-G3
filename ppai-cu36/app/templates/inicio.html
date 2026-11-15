@@ -1,10 +1,37 @@
 {% extends "base.html" %}
 {% block titulo %}Inicio{% endblock %}
 {% block contenido %}
-<section class="tarjeta angosta">
-  <h1>Bienvenido/a, {{ usuario }}</h1>
-  <form method="post" action="{{ url_for('pantalla.selecOpcConsultarUbicacion') }}">
-    <button type="submit">Consultar ubicación de bolsines</button>
-  </form>
-</section>
+<div class="contenedor">
+  <div class="saludo">
+    <h1>Hola, {{ usuarioActual.nombre if usuarioActual else usuario }}</h1>
+    <p class="texto-suave">Elegí una opción para continuar.</p>
+  </div>
+
+  <div class="grilla-opciones">
+    <form method="post" action="{{ url_for('pantalla.selecOpcConsultarUbicacion') }}" class="opcion">
+      <button type="submit" class="opcion-boton">
+        <span class="opcion-icono">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <span class="opcion-texto">
+          <strong>Consultar ubicación de bolsines</strong>
+          <small>CU 36 · Ver en un mapa los bolsines enviados por tu comisión médica que están en tránsito.</small>
+        </span>
+        <span class="opcion-flecha">→</span>
+      </button>
+    </form>
+
+    <div class="opcion opcion-deshabilitada">
+      <div class="opcion-boton">
+        <span class="opcion-icono">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5"/></svg>
+        </span>
+        <span class="opcion-texto">
+          <strong>Registrar recepción de bolsín</strong>
+          <small>CU 28 · No incluido en esta entrega.</small>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
