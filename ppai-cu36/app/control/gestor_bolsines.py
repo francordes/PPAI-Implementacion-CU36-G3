@@ -131,8 +131,9 @@ class GestorBolsines(IAgregado):
             # A3 parcial: se informa y se continúa con los bolsines localizados
             self._pantalla.mostrarMensajeAlternativo(
                 "A3",
-                "El GPS Tracker no pudo informar la ubicación de los bolsines: "
-                + ", ".join(str(n) for n in self._bolsinesSinUbicacion),
+                "No se pudo obtener la ubicación de los siguientes bolsines desde el GPS Tracker: "
+                + ", ".join(str(n) for n in self._bolsinesSinUbicacion)
+                + ". Se muestran en el mapa los bolsines restantes.",
             )
         self._pantalla.mostrarOpcionSeleccionarDesdeMapa()
         self._pantalla.mostrarOpcionFiltrarPorNumero()

@@ -35,7 +35,7 @@ BOLSINES = [
     (109, 5109, "CM-LPL-01", "CM-CBA-01", "Enviado"),
     (110, 5110, "CM-CBA-02", "CM-ROS-02", "Enviado"),
     # No existe en la API del GPS -> A3 (el GPS no pudo informar ubicación)
-    (111, 5111, "CM-CBA-01", "CM-BA-01", "Enviado"),
+    (111, 5111, "CM-CBA-02", "CM-BA-01", "Enviado"),
     # De CM-CBA-01 pero NO enviados -> el iterador los descarta
     (112, 5112, "CM-CBA-01", "CM-MDZ-03", "Cerrado"),
     (113, 5113, "CM-CBA-01", "CM-ROS-02", "Recibido en CM destino"),
