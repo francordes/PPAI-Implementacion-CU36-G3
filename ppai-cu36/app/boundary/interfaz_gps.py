@@ -7,21 +7,13 @@ class InterfazGPS:
 
     ENDPOINT = "/api/xtr-4500l/getBolsinLocation"
 
-    def solicitarDatosLocalizacion(self, datosBolsines: list) -> dict:
-        """Solicita la ubicación de cada bolsín (*getBolsinLocation()).
+    def solicitarDatosLocalizacion(self, numeroBolsin: int, codigoCMOrigen: str):
+        """Solicita al GPS Tracker la ubicación de un bolsín.
 
-        datosBolsines: lista de dicts {numeroBolsin, codigoCMOrigen}.
-        Retorna {"localizados": [...], "sinUbicacion": [nros]}.
+        Retorna {numeroBolsin, latitud, longitud, fechaHoraUltimaActualizacion},
+        o None si el GPS no pudo informar la ubicación (A3).
         """
-        localizados = []
-        sinUbicacion = []
-        for dato in datosBolsines:
-            ubicacion = self._getBolsinLocation(dato["numeroBolsin"], dato["codigoCMOrigen"])
-            if ubicacion is None:
-                sinUbicacion.append(dato["numeroBolsin"])  # A3
-            else:
-                localizados.append(ubicacion)
-        return {"localizados": localizados, "sinUbicacion": sinUbicacion}
+        return self._getBolsinLocation(numeroBolsin, codigoCMOrigen)
 
     def _getBolsinLocation(self, numeroBolsin: int, codigoCMOrigen: str):
         url = current_app.config["GPS_API_URL"] + self.ENDPOINT

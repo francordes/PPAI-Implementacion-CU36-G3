@@ -80,8 +80,8 @@ class GestorBolsines(IAgregado):
     # ======================================================================
     def _buscarBolsinEnviadoDeCM(self) -> None:
         self.listaBolsines = Bolsin.query.order_by(Bolsin.numeroBolsin).all()
+        # Resultado del filtrado del iterador: se usa en el resto del CU (A1, GPS, mapa y selección)
         self.listaBolsinesEnviados = []
-        self._datosBolsinesEnviados = []
 
         iterador = self.crearIterador(self.listaBolsines)
         iterador.primero()
@@ -89,10 +89,6 @@ class GestorBolsines(IAgregado):
             bolsin = iterador.elementoActual()
             if bolsin is not None:
                 self.listaBolsinesEnviados.append(bolsin)
-                self._datosBolsinesEnviados.append({
-                    "numeroBolsin": bolsin.getNumeroBolsin(),
-                    "codigoCMOrigen": bolsin.getCodigoCMOrigen(),
-                })
             iterador.siguiente()
 
     def crearIterador(self, elementos: list):
@@ -110,9 +106,18 @@ class GestorBolsines(IAgregado):
     # Métodos conservados del análisis (solicitarDatosLocalizacion ... obtenerCMDestino)
     # ======================================================================
     def _solicitarDatosLocalizacion(self) -> None:
-        respuesta = self._interfazGPS.solicitarDatosLocalizacion(self._datosBolsinesEnviados)
-        self.listaBolsinesConLocalizacion = respuesta["localizados"]
-        self._bolsinesSinUbicacion = respuesta["sinUbicacion"]
+        """Por cada bolsín enviado le pide su número y su código de CM origen,
+        y solicita su ubicación al GPS Tracker (*solicitarDatosLocalizacion)."""
+        self.listaBolsinesConLocalizacion = []
+        self._bolsinesSinUbicacion = []
+        for bolsin in self.listaBolsinesEnviados:
+            ubicacion = self._interfazGPS.solicitarDatosLocalizacion(
+                bolsin.getNumeroBolsin(), bolsin.getCodigoCMOrigen()
+            )
+            if ubicacion is None:
+                self._bolsinesSinUbicacion.append(bolsin.getNumeroBolsin())  # A3
+            else:
+                self.listaBolsinesConLocalizacion.append(ubicacion)
 
     def _mapearBolsinesEnMapa(self) -> None:
         datosMapa = []
